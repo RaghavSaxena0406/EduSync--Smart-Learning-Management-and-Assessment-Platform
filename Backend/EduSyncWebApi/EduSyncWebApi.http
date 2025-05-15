@@ -1,4 +1,4 @@
-@EduSyncWebApi_HostAddress = http://localhost:5170
+@EduSyncWebApi_HostAddress = http://localhost:5162
 
 GET {{EduSyncWebApi_HostAddress}}/weatherforecast/
 Accept: application/json

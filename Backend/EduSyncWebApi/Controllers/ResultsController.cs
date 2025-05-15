@@ -28,11 +28,6 @@ namespace EduSyncWebApi.Controllers
             return await _context.Results.ToListAsync();
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
         // GET: api/Results/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Result>> GetResult(Guid id)
@@ -47,12 +42,6 @@ namespace EduSyncWebApi.Controllers
             return result;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="result"></param>
-        /// <returns></returns>
         // PUT: api/Results/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
@@ -84,17 +73,13 @@ namespace EduSyncWebApi.Controllers
             return NoContent();
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="result"></param>
-        /// <returns></returns>
         // POST: api/Results
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Result>> PostResult(Result result)
         {
             result.ResultId = Guid.NewGuid();
+
             _context.Results.Add(result);
             try
             {
@@ -115,11 +100,6 @@ namespace EduSyncWebApi.Controllers
             return CreatedAtAction("GetResult", new { id = result.ResultId }, result);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
         // DELETE: api/Results/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteResult(Guid id)

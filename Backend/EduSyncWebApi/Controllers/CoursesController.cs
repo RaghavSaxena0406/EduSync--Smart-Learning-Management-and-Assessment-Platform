@@ -82,24 +82,27 @@ namespace EduSyncWebApi.Controllers
                 return BadRequest(ModelState);
 
             course.CourseId = Guid.NewGuid();
-
-            // Prevent EF from trying to insert an existing Instructor
-            course.Instructor = null;
-
+            
             _context.Courses.Add(course);
-
+            
             try
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateException ex)
+            catch (DbUpdateException)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, new { error = ex.Message });
+                if (CourseExists(course.CourseId))
+                {
+                    return Conflict();
+                }
+                else
+                {
+                    throw;
+                }
             }
 
             return CreatedAtAction("GetCourse", new { id = course.CourseId }, course);
         }
-
 
         // DELETE: api/Courses/5
         [HttpDelete("{id}")]

@@ -8192,11 +8192,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Raghav Folder\\Coding\\Training\\EsuSync_Final Project\\Backend\\EduSyncWebApi\\EduSyncWebApi.csproj",
+      "projectUniqueName": "D:\\Raghav Folder\\Coding\\Personal\\Final Project\\Backend\\EduSyncWebApi\\EduSyncWebApi.csproj",
       "projectName": "EduSyncWebApi",
-      "projectPath": "D:\\Raghav Folder\\Coding\\Training\\EsuSync_Final Project\\Backend\\EduSyncWebApi\\EduSyncWebApi.csproj",
+      "projectPath": "D:\\Raghav Folder\\Coding\\Personal\\Final Project\\Backend\\EduSyncWebApi\\EduSyncWebApi.csproj",
       "packagesPath": "C:\\Users\\Raghav\\.nuget\\packages\\",
-      "outputPath": "D:\\Raghav Folder\\Coding\\Training\\EsuSync_Final Project\\Backend\\EduSyncWebApi\\obj\\",
+      "outputPath": "D:\\Raghav Folder\\Coding\\Personal\\Final Project\\Backend\\EduSyncWebApi\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

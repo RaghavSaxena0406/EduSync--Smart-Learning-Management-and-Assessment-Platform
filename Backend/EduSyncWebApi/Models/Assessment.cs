@@ -16,4 +16,6 @@ public partial class Assessment
     public int? MaxScore { get; set; }
 
     public virtual Course? Course { get; set; }
+
+    public virtual ICollection<Result> Results { get; set; } = new List<Result>();
 }
