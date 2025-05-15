@@ -73,6 +73,18 @@ namespace EduSyncWebApi.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Insert in the following format:
+        /// { 
+        /// "assessmentId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        ///"courseId": "0baf900f-43dd-4c85-ad68-b1004e4bc003",
+        ///"title": "Mid Term-1",
+        ///"questions": "30",
+        //"maxScore": 60
+        ///}
+        /// </summary>
+        /// <param name="assessment"></param>
+        /// <returns>Http 201 status code on Success</returns>
         // POST: api/Assessments
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
