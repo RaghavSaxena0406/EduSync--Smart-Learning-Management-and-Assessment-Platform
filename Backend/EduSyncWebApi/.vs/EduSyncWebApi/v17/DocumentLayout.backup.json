@@ -3,8 +3,20 @@
   "WorkspaceRootPath": "D:\\Raghav Folder\\Coding\\Training\\EsuSync_Final Project\\Backend\\EduSyncWebApi\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{3E876A03-F06E-4341-9863-ABD8418AE10E}|EduSyncWebApi.csproj|d:\\raghav folder\\coding\\training\\esusync_final project\\backend\\edusyncwebapi\\controllers\\resultscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3E876A03-F06E-4341-9863-ABD8418AE10E}|EduSyncWebApi.csproj|solutionrelative:controllers\\resultscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{3E876A03-F06E-4341-9863-ABD8418AE10E}|EduSyncWebApi.csproj|d:\\raghav folder\\coding\\training\\esusync_final project\\backend\\edusyncwebapi\\controllers\\usermodelscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{3E876A03-F06E-4341-9863-ABD8418AE10E}|EduSyncWebApi.csproj|solutionrelative:controllers\\usermodelscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3E876A03-F06E-4341-9863-ABD8418AE10E}|EduSyncWebApi.csproj|d:\\raghav folder\\coding\\training\\esusync_final project\\backend\\edusyncwebapi\\controllers\\assessmentscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3E876A03-F06E-4341-9863-ABD8418AE10E}|EduSyncWebApi.csproj|solutionrelative:controllers\\assessmentscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3E876A03-F06E-4341-9863-ABD8418AE10E}|EduSyncWebApi.csproj|d:\\raghav folder\\coding\\training\\esusync_final project\\backend\\edusyncwebapi\\controllers\\coursescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3E876A03-F06E-4341-9863-ABD8418AE10E}|EduSyncWebApi.csproj|solutionrelative:controllers\\coursescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{3E876A03-F06E-4341-9863-ABD8418AE10E}|EduSyncWebApi.csproj|d:\\raghav folder\\coding\\training\\esusync_final project\\backend\\edusyncwebapi\\data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -17,22 +29,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{3E876A03-F06E-4341-9863-ABD8418AE10E}|EduSyncWebApi.csproj|d:\\raghav folder\\coding\\training\\esusync_final project\\backend\\edusyncwebapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{3E876A03-F06E-4341-9863-ABD8418AE10E}|EduSyncWebApi.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{3E876A03-F06E-4341-9863-ABD8418AE10E}|EduSyncWebApi.csproj|d:\\raghav folder\\coding\\training\\esusync_final project\\backend\\edusyncwebapi\\controllers\\resultscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{3E876A03-F06E-4341-9863-ABD8418AE10E}|EduSyncWebApi.csproj|solutionrelative:controllers\\resultscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{3E876A03-F06E-4341-9863-ABD8418AE10E}|EduSyncWebApi.csproj|d:\\raghav folder\\coding\\training\\esusync_final project\\backend\\edusyncwebapi\\controllers\\coursescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{3E876A03-F06E-4341-9863-ABD8418AE10E}|EduSyncWebApi.csproj|solutionrelative:controllers\\coursescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{3E876A03-F06E-4341-9863-ABD8418AE10E}|EduSyncWebApi.csproj|d:\\raghav folder\\coding\\training\\esusync_final project\\backend\\edusyncwebapi\\controllers\\assessmentscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{3E876A03-F06E-4341-9863-ABD8418AE10E}|EduSyncWebApi.csproj|solutionrelative:controllers\\assessmentscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{3E876A03-F06E-4341-9863-ABD8418AE10E}|EduSyncWebApi.csproj|d:\\raghav folder\\coding\\training\\esusync_final project\\backend\\edusyncwebapi\\models\\usermodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{3E876A03-F06E-4341-9863-ABD8418AE10E}|EduSyncWebApi.csproj|solutionrelative:models\\usermodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -42,11 +38,11 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 5,
               "Title": "appsettings.json",
               "DocumentMoniker": "D:\\Raghav Folder\\Coding\\Training\\EsuSync_Final Project\\Backend\\EduSyncWebApi\\appsettings.json",
               "RelativeDocumentMoniker": "appsettings.json",
@@ -58,7 +54,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 6,
               "Title": "Program.cs",
               "DocumentMoniker": "D:\\Raghav Folder\\Coding\\Training\\EsuSync_Final Project\\Backend\\EduSyncWebApi\\Program.cs",
               "RelativeDocumentMoniker": "Program.cs",
@@ -70,68 +66,59 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 0,
               "Title": "ResultsController.cs",
               "DocumentMoniker": "D:\\Raghav Folder\\Coding\\Training\\EsuSync_Final Project\\Backend\\EduSyncWebApi\\Controllers\\ResultsController.cs",
               "RelativeDocumentMoniker": "Controllers\\ResultsController.cs",
               "ToolTip": "D:\\Raghav Folder\\Coding\\Training\\EsuSync_Final Project\\Backend\\EduSyncWebApi\\Controllers\\ResultsController.cs",
               "RelativeToolTip": "Controllers\\ResultsController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAFYAAAAAAAAAAAAIwGAAAAAtAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-14T13:55:33.634Z"
+              "WhenOpened": "2025-05-14T13:55:33.634Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "UserModelsController.cs",
               "DocumentMoniker": "D:\\Raghav Folder\\Coding\\Training\\EsuSync_Final Project\\Backend\\EduSyncWebApi\\Controllers\\UserModelsController.cs",
               "RelativeDocumentMoniker": "Controllers\\UserModelsController.cs",
               "ToolTip": "D:\\Raghav Folder\\Coding\\Training\\EsuSync_Final Project\\Backend\\EduSyncWebApi\\Controllers\\UserModelsController.cs",
               "RelativeToolTip": "Controllers\\UserModelsController.cs",
-              "ViewState": "AgIAAF0AAAAAAAAAAAAuwGsAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAF8AAAAAAAAAAAAIwG0AAAAMAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-05-14T13:48:53.954Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 3,
               "Title": "CoursesController.cs",
               "DocumentMoniker": "D:\\Raghav Folder\\Coding\\Training\\EsuSync_Final Project\\Backend\\EduSyncWebApi\\Controllers\\CoursesController.cs",
               "RelativeDocumentMoniker": "Controllers\\CoursesController.cs",
               "ToolTip": "D:\\Raghav Folder\\Coding\\Training\\EsuSync_Final Project\\Backend\\EduSyncWebApi\\Controllers\\CoursesController.cs",
               "RelativeToolTip": "Controllers\\CoursesController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAEoAAAAAAAAAAAAcwFUAAABGAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-14T13:47:55.297Z"
+              "WhenOpened": "2025-05-14T13:47:55.297Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 2,
               "Title": "AssessmentsController.cs",
               "DocumentMoniker": "D:\\Raghav Folder\\Coding\\Training\\EsuSync_Final Project\\Backend\\EduSyncWebApi\\Controllers\\AssessmentsController.cs",
               "RelativeDocumentMoniker": "Controllers\\AssessmentsController.cs",
               "ToolTip": "D:\\Raghav Folder\\Coding\\Training\\EsuSync_Final Project\\Backend\\EduSyncWebApi\\Controllers\\AssessmentsController.cs",
               "RelativeToolTip": "Controllers\\AssessmentsController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAdAAAAAAAAAA==",
+              "ViewState": "AgIAAEQAAAAAAAAAAAAIwFYAAAAqAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-14T10:53:24.855Z"
+              "WhenOpened": "2025-05-14T10:53:24.855Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "UserModel.cs",
-              "DocumentMoniker": "D:\\Raghav Folder\\Coding\\Training\\EsuSync_Final Project\\Backend\\EduSyncWebApi\\Models\\UserModel.cs",
-              "RelativeDocumentMoniker": "Models\\UserModel.cs",
-              "ToolTip": "D:\\Raghav Folder\\Coding\\Training\\EsuSync_Final Project\\Backend\\EduSyncWebApi\\Models\\UserModel.cs",
-              "RelativeToolTip": "Models\\UserModel.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-14T10:31:58.168Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 4,
               "Title": "AppDbContext.cs",
               "DocumentMoniker": "D:\\Raghav Folder\\Coding\\Training\\EsuSync_Final Project\\Backend\\EduSyncWebApi\\Data\\AppDbContext.cs",
               "RelativeDocumentMoniker": "Data\\AppDbContext.cs",

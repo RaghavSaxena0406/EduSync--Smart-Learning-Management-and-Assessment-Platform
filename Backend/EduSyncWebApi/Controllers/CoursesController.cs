@@ -78,25 +78,28 @@ namespace EduSyncWebApi.Controllers
         [HttpPost]
         public async Task<ActionResult<Course>> PostCourse(Course course)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            course.CourseId = Guid.NewGuid();
+
+            // Prevent EF from trying to insert an existing Instructor
+            course.Instructor = null;
+
             _context.Courses.Add(course);
+
             try
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateException)
+            catch (DbUpdateException ex)
             {
-                if (CourseExists(course.CourseId))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
+                return StatusCode(StatusCodes.Status500InternalServerError, new { error = ex.Message });
             }
 
             return CreatedAtAction("GetCourse", new { id = course.CourseId }, course);
         }
+
 
         // DELETE: api/Courses/5
         [HttpDelete("{id}")]
