@@ -75,9 +75,40 @@ namespace EduSyncWebApi.Controllers
 
         // POST: api/UserModels
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        //[HttpPost]
+        //public async Task<ActionResult<UserModel>> PostUserModel(UserModel userModel)
+        //{
+        //    _context.UserModels.Add(userModel);
+        //    try
+        //    {
+        //        await _context.SaveChangesAsync();
+        //    }
+        //    catch (DbUpdateException)
+        //    {
+        //        if (UserModelExists(userModel.UserId))
+        //        {
+        //            return Conflict();
+        //        }
+        //        else
+        //        {
+        //            throw;
+        //        }
+        //    }
+
+        //    return CreatedAtAction("GetUserModel", new { id = userModel.UserId }, userModel);
+        //}
+
         [HttpPost]
         public async Task<ActionResult<UserModel>> PostUserModel(UserModel userModel)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            // Generate a new GUID to satisfy EF's requirement
+            userModel.UserId = Guid.NewGuid();
+
             _context.UserModels.Add(userModel);
             try
             {
@@ -97,6 +128,7 @@ namespace EduSyncWebApi.Controllers
 
             return CreatedAtAction("GetUserModel", new { id = userModel.UserId }, userModel);
         }
+
 
         // DELETE: api/UserModels/5
         [HttpDelete("{id}")]

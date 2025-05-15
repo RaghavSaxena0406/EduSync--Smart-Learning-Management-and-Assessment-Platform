@@ -14,8 +14,4 @@ public partial class Result
     public int? Score { get; set; }
 
     public DateTime? AttemptDate { get; set; }
-
-    public virtual Assessment? Assessment { get; set; }
-
-    public virtual UserModel? User { get; set; }
 }

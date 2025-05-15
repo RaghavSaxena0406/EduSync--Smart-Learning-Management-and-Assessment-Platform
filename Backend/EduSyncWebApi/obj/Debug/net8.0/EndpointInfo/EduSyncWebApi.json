@@ -775,13 +775,6 @@
           },
           "course": {
             "$ref": "#/components/schemas/Course"
-          },
-          "results": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Result"
-            },
-            "nullable": true
           }
         },
         "additionalProperties": false
@@ -849,12 +842,6 @@
             "type": "string",
             "format": "date-time",
             "nullable": true
-          },
-          "assessment": {
-            "$ref": "#/components/schemas/Assessment"
-          },
-          "user": {
-            "$ref": "#/components/schemas/UserModel"
           }
         },
         "additionalProperties": false
@@ -886,13 +873,6 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/Course"
-            },
-            "nullable": true
-          },
-          "results": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Result"
             },
             "nullable": true
           }

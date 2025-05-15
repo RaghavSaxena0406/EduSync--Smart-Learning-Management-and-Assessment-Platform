@@ -148,6 +148,7 @@ D:\Raghav Folder\Coding\Training\EsuSync_Final Project\Backend\EduSyncWebApi\obj
 D:\Raghav Folder\Coding\Training\EsuSync_Final Project\Backend\EduSyncWebApi\obj\Debug\net8.0\EduSyncWebApi.csproj.CoreCompileInputs.cache
 D:\Raghav Folder\Coding\Training\EsuSync_Final Project\Backend\EduSyncWebApi\obj\Debug\net8.0\EduSyncWebApi.MvcApplicationPartsAssemblyInfo.cs
 D:\Raghav Folder\Coding\Training\EsuSync_Final Project\Backend\EduSyncWebApi\obj\Debug\net8.0\EduSyncWebApi.MvcApplicationPartsAssemblyInfo.cache
+D:\Raghav Folder\Coding\Training\EsuSync_Final Project\Backend\EduSyncWebApi\obj\Debug\net8.0\EduSyncWebApi.sourcelink.json
 D:\Raghav Folder\Coding\Training\EsuSync_Final Project\Backend\EduSyncWebApi\obj\Debug\net8.0\scopedcss\bundle\EduSyncWebApi.styles.css
 D:\Raghav Folder\Coding\Training\EsuSync_Final Project\Backend\EduSyncWebApi\obj\Debug\net8.0\staticwebassets.build.json
 D:\Raghav Folder\Coding\Training\EsuSync_Final Project\Backend\EduSyncWebApi\obj\Debug\net8.0\staticwebassets.development.json

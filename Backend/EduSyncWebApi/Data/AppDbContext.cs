@@ -65,25 +65,15 @@ public partial class AppDbContext : DbContext
 
             entity.HasOne(d => d.Instructor).WithMany(p => p.Courses)
                 .HasForeignKey(d => d.InstructorId)
-                .HasConstraintName("FK__Course__Instruct__3B75D760");
+                .HasConstraintName("FK_Course_UserModel");
         });
 
         modelBuilder.Entity<Result>(entity =>
         {
-            entity.HasKey(e => e.ResultId).HasName("PK__Result__97690208DAD53AFA");
-
             entity.ToTable("Result");
 
             entity.Property(e => e.ResultId).ValueGeneratedNever();
             entity.Property(e => e.AttemptDate).HasColumnType("datetime");
-
-            entity.HasOne(d => d.Assessment).WithMany(p => p.Results)
-                .HasForeignKey(d => d.AssessmentId)
-                .HasConstraintName("FK__Result__Assessme__412EB0B6");
-
-            entity.HasOne(d => d.User).WithMany(p => p.Results)
-                .HasForeignKey(d => d.UserId)
-                .HasConstraintName("FK__Result__UserId__4222D4EF");
         });
 
         modelBuilder.Entity<UserModel>(entity =>
