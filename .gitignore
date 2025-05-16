@@ -3,3 +3,4 @@ obj
 .vs
 .git
 .github
+node_modules
