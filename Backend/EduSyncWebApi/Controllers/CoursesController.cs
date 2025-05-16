@@ -109,7 +109,7 @@ namespace EduSyncWebApi.Controllers
             }
             catch (DbUpdateException)
             {
-                if (CourseExists(course.CourseId))
+                if (CourseExists(orignalCourse.CourseId))
                 {
                     return Conflict();
                 }
@@ -119,7 +119,7 @@ namespace EduSyncWebApi.Controllers
                 }
             }
 
-            return CreatedAtAction("GetCourse", new { id = course.CourseId }, course);
+            return CreatedAtAction("GetCourse", new { id = orignalCourse.CourseId }, orignalCourse);
         }
 
         // DELETE: api/Courses/5

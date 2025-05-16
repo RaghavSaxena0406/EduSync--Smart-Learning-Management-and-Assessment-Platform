@@ -106,7 +106,7 @@ namespace EduSyncWebApi.Controllers
             }
             catch (DbUpdateException)
             {
-                if (ResultExists(result.ResultId))
+                if (ResultExists(orignalResult.ResultId))
                 {
                     return Conflict();
                 }
@@ -116,7 +116,7 @@ namespace EduSyncWebApi.Controllers
                 }
             }
 
-            return CreatedAtAction("GetResult", new { id = result.ResultId }, result);
+            return CreatedAtAction("GetResult", new { id = orignalResult.ResultId }, orignalResult);
         }
 
         // DELETE: api/Results/5

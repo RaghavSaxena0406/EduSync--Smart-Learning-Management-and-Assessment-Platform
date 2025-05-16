@@ -112,7 +112,7 @@ namespace EduSyncWebApi.Controllers
             }
             catch (DbUpdateException)
             {
-                if (UserModelExists(userModel.UserId))
+                if (UserModelExists(orignalUser.UserId))
                 {
                     return Conflict();
                 }
@@ -122,7 +122,7 @@ namespace EduSyncWebApi.Controllers
                 }
             }
 
-            return CreatedAtAction("GetUserModel", new { id = userModel.UserId }, userModel);
+            return CreatedAtAction("GetUserModel", new { id = orignalUser.UserId }, orignalUser);
         }
 
         // DELETE: api/UserModels/5

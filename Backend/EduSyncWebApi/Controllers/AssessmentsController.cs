@@ -86,11 +86,19 @@ namespace EduSyncWebApi.Controllers
         // POST: api/Assessments
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Assessment>> PostAssessment(Assessment assessment)
+        public async Task<ActionResult<Assessment>> PostAssessment(AssessmentDTO assessment)
         {
-            assessment.AssessmentId = Guid.NewGuid();
+            //assessment.AssessmentId = Guid.NewGuid();
+            Assessment orignalAssessment = new Assessment()
+            {
+                AssessmentId = assessment.AssessmentId,
+                CourseId = assessment.CourseId,
+                Title = assessment.Title,
+                Questions = assessment.Questions,
+                MaxScore = assessment.MaxScore
+            };
 
-            _context.Assessments.Add(assessment);
+            _context.Assessments.Add(orignalAssessment);
 
             try
             {
@@ -98,7 +106,7 @@ namespace EduSyncWebApi.Controllers
             }
             catch (DbUpdateException)
             {
-                if (AssessmentExists(assessment.AssessmentId))
+                if (AssessmentExists(orignalAssessment.AssessmentId))
                 {
                     return Conflict();
                 }
@@ -108,7 +116,7 @@ namespace EduSyncWebApi.Controllers
                 }
             }
 
-            return CreatedAtAction("GetAssessment", new { id = assessment.AssessmentId }, assessment);
+            return CreatedAtAction("GetAssessment", new { id = orignalAssessment .AssessmentId }, orignalAssessment);
         }
 
         // DELETE: api/Assessments/5
