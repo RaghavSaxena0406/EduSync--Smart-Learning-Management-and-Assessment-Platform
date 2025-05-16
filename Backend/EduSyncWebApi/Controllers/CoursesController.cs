@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using EduSyncWebApi.Data;
 using EduSyncWebApi.Models;
+using EduSyncWebApi.DTO;
 
 namespace EduSyncWebApi.Controllers
 {
@@ -45,14 +46,23 @@ namespace EduSyncWebApi.Controllers
         // PUT: api/Courses/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCourse(Guid id, Course course)
+        public async Task<IActionResult> PutCourse(Guid id, CourseDTO course)
         {
             if (id != course.CourseId)
             {
                 return BadRequest();
             }
 
-            _context.Entry(course).State = EntityState.Modified;
+            Course orignalCourse = new Course()
+            {
+                CourseId = course.CourseId,
+                Title = course.Title,
+                Description = course.Description,
+                InstructorId = course.InstructorId,
+                MediaUrl = course.MediaUrl
+            };
+
+            _context.Entry(orignalCourse).State = EntityState.Modified;
 
             try
             {
@@ -76,15 +86,23 @@ namespace EduSyncWebApi.Controllers
         // POST: api/Courses
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Course>> PostCourse(Course course)
+        public async Task<ActionResult<Course>> PostCourse(CourseDTO course)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            course.CourseId = Guid.NewGuid();
-            
-            _context.Courses.Add(course);
-            
+            //course.CourseId = Guid.NewGuid();
+            Course orignalCourse = new Course()
+            {
+                CourseId = course.CourseId,
+                Title = course.Title,
+                Description = course.Description,
+                InstructorId = course.InstructorId,
+                MediaUrl = course.MediaUrl
+            };
+
+            _context.Courses.Add(orignalCourse);
+
             try
             {
                 await _context.SaveChangesAsync();

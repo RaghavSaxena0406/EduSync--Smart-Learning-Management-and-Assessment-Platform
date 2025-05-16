@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using EduSyncWebApi.Data;
 using EduSyncWebApi.Models;
+using EduSyncWebApi.DTO;
 
 namespace EduSyncWebApi.Controllers
 {
@@ -45,14 +46,23 @@ namespace EduSyncWebApi.Controllers
         // PUT: api/Results/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutResult(Guid id, Result result)
+        public async Task<IActionResult> PutResult(Guid id, ResultDTO result)
         {
             if (id != result.ResultId)
             {
                 return BadRequest();
             }
 
-            _context.Entry(result).State = EntityState.Modified;
+            Result orignalResult = new Result()
+            {
+                ResultId = result.ResultId,
+                AssessmentId = result.AssessmentId,
+                UserId = result.UserId,
+                Score = result.Score,
+                AttemptDate = result.AttemptDate
+            };
+
+            _context.Entry(orignalResult).State = EntityState.Modified;
 
             try
             {
@@ -76,11 +86,20 @@ namespace EduSyncWebApi.Controllers
         // POST: api/Results
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Result>> PostResult(Result result)
+        public async Task<ActionResult<Result>> PostResult(ResultDTO result)
         {
-            result.ResultId = Guid.NewGuid();
+            //result.ResultId = Guid.NewGuid();
+            Result orignalResult = new Result()
+            {
+                ResultId = result.ResultId,
+                AssessmentId = result.AssessmentId,
+                UserId = result.UserId,
+                Score = result.Score,
+                AttemptDate = result.AttemptDate
+            };
 
-            _context.Results.Add(result);
+            _context.Results.Add(orignalResult);
+
             try
             {
                 await _context.SaveChangesAsync();

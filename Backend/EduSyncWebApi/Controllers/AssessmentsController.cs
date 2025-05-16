@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using EduSyncWebApi.Data;
 using EduSyncWebApi.Models;
+using EduSyncWebApi.DTO;
 
 namespace EduSyncWebApi.Controllers
 {
@@ -45,14 +46,23 @@ namespace EduSyncWebApi.Controllers
         // PUT: api/Assessments/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutAssessment(Guid id, Assessment assessment)
+        public async Task<IActionResult> PutAssessment(Guid id, AssessmentDTO assessment)
         {
             if (id != assessment.AssessmentId)
             {
                 return BadRequest();
             }
 
-            _context.Entry(assessment).State = EntityState.Modified;
+            Assessment orignalAssessment = new Assessment()
+            {
+                AssessmentId = assessment.AssessmentId,
+                CourseId = assessment.CourseId,
+                Title = assessment.Title,
+                Questions = assessment.Questions,
+                MaxScore = assessment.MaxScore
+            };
+
+            _context.Entry(orignalAssessment).State = EntityState.Modified;
 
             try
             {
@@ -81,7 +91,7 @@ namespace EduSyncWebApi.Controllers
             assessment.AssessmentId = Guid.NewGuid();
 
             _context.Assessments.Add(assessment);
-            
+
             try
             {
                 await _context.SaveChangesAsync();

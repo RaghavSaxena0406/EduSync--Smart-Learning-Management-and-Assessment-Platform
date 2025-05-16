@@ -26,7 +26,7 @@ public partial class AppDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer(" Data Source=DESKTOP-IIKHONP;Initial Catalog=EduSyncProjectDB;Integrated Security=True;Connect Timeout=30;Encrypt=True;Trust Server Certificate=True;Application Intent=ReadWrite;Multi Subnet Failover=False");
+        => optionsBuilder.UseSqlServer(" Data Source=DESKTOP-IIKHONP;Initial Catalog=EduSyncProjectDB;Integrated Security=True;Connect Timeout=30;Encrypt=True;Trust Server Certificate=True;Application Intent=ReadWrite;Multi Subnet Failover=False ");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -36,7 +36,7 @@ public partial class AppDbContext : DbContext
 
             entity.ToTable("Assessment");
 
-            entity.Property(e => e.AssessmentId).ValueGeneratedNever();
+            entity.Property(e => e.AssessmentId).HasDefaultValueSql("(newsequentialid())");
             entity.Property(e => e.Title)
                 .HasMaxLength(200)
                 .IsUnicode(false);
@@ -52,7 +52,7 @@ public partial class AppDbContext : DbContext
 
             entity.ToTable("Course");
 
-            entity.Property(e => e.CourseId).ValueGeneratedNever();
+            entity.Property(e => e.CourseId).HasDefaultValueSql("(newsequentialid())");
             entity.Property(e => e.Description)
                 .HasMaxLength(100)
                 .IsUnicode(false);
@@ -72,7 +72,7 @@ public partial class AppDbContext : DbContext
         {
             entity.ToTable("Result");
 
-            entity.Property(e => e.ResultId).ValueGeneratedNever();
+            entity.Property(e => e.ResultId).HasDefaultValueSql("(newsequentialid())");
             entity.Property(e => e.AttemptDate).HasColumnType("datetime");
 
             entity.HasOne(d => d.Assessment).WithMany(p => p.Results)
@@ -90,9 +90,11 @@ public partial class AppDbContext : DbContext
 
             entity.ToTable("UserModel");
 
+            entity.HasIndex(e => e.Email, "UQ_UserModels_Email").IsUnique();
+
             entity.HasIndex(e => e.Email, "UQ__UserMode__A9D10534F75F0D55").IsUnique();
 
-            entity.Property(e => e.UserId).ValueGeneratedNever();
+            entity.Property(e => e.UserId).HasDefaultValueSql("(newid())");
             entity.Property(e => e.Email)
                 .HasMaxLength(100)
                 .IsUnicode(false);

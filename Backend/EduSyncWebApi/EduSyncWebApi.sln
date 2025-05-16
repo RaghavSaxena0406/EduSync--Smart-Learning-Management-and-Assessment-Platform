@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.13.35825.156 d17.13
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EduSyncWebApi", "EduSyncWebApi.csproj", "{3D3C5871-8BA1-4C7E-B715-874D526217D4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EduSyncWebApi", "EduSyncWebApi.csproj", "{B8FF38AC-782F-4204-99C4-CE3F6CC19EC1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{3D3C5871-8BA1-4C7E-B715-874D526217D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3D3C5871-8BA1-4C7E-B715-874D526217D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3D3C5871-8BA1-4C7E-B715-874D526217D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3D3C5871-8BA1-4C7E-B715-874D526217D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B8FF38AC-782F-4204-99C4-CE3F6CC19EC1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8FF38AC-782F-4204-99C4-CE3F6CC19EC1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8FF38AC-782F-4204-99C4-CE3F6CC19EC1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8FF38AC-782F-4204-99C4-CE3F6CC19EC1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {0F082251-2989-4F77-8153-C76B1C75B752}
+		SolutionGuid = {029B1FBE-F5DB-4B9B-8989-DCD5EC204B36}
 	EndGlobalSection
 EndGlobal

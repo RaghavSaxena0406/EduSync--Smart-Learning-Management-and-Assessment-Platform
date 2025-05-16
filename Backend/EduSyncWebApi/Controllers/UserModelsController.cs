@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using EduSyncWebApi.Data;
 using EduSyncWebApi.Models;
+using EduSyncWebApi.DTO;
 
 namespace EduSyncWebApi.Controllers
 {
@@ -45,14 +46,23 @@ namespace EduSyncWebApi.Controllers
         // PUT: api/UserModels/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUserModel(Guid id, UserModel userModel)
+        public async Task<IActionResult> PutUserModel(Guid id, UserModelDTO userModel)
         {
             if (id != userModel.UserId)
             {
                 return BadRequest();
             }
 
-            _context.Entry(userModel).State = EntityState.Modified;
+            UserModel orignalUser = new UserModel()
+            {
+                UserId = userModel.UserId,
+                Name = userModel.Name,
+                Email = userModel.Email,
+                Role = userModel.Role,
+                PasswordHash = userModel.PasswordHash
+            };
+
+            _context.Entry(orignalUser).State = EntityState.Modified;
 
             try
             {
@@ -76,16 +86,25 @@ namespace EduSyncWebApi.Controllers
         // POST: api/UserModels
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<UserModel>> PostUserModel(UserModel userModel)
+        public async Task<ActionResult<UserModel>> PostUserModel(UserModelDTO userModel)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            userModel.UserId = Guid.NewGuid();
+            UserModel orignalUser = new UserModel()
+            {
+                UserId = userModel.UserId,
+                Name = userModel.Name,
+                Email = userModel.Email,
+                Role = userModel.Role,
+                PasswordHash = userModel.PasswordHash
+            };
 
-            _context.UserModels.Add(userModel);
+            //userModel.UserId = Guid.NewGuid();
+
+            _context.UserModels.Add(orignalUser);
 
             try
             {
