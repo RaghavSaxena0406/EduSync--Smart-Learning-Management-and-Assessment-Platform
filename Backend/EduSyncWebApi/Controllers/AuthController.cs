@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore; // For EF Core
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using EduSyncWebApi.DTO;
@@ -14,10 +16,12 @@ namespace EduSyncWebApi.Controllers
     public class AuthController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly IConfiguration _configuration;
 
-        public AuthController(AppDbContext context)
+        public AuthController(AppDbContext context, IConfiguration configuration)
         {
             _context = context;
+            _configuration = configuration;
         }
 
         // POST: api/Auth/register
@@ -32,13 +36,23 @@ namespace EduSyncWebApi.Controllers
                 Name = dto.Name,
                 Email = dto.Email,
                 Role = dto.Role,
-                PasswordHash = HashPassword(dto.PasswordHash) // For simplicity, use proper hashing in production
+                PasswordHash = HashPassword(dto.PasswordHash)
             };
 
             _context.UserModels.Add(user);
             await _context.SaveChangesAsync();
 
-            return Ok("User registered successfully");
+            // Issue JWT after successful registration
+            var token = GenerateJwtToken(user);
+
+            return Ok(new
+            {
+                token = new JwtSecurityTokenHandler().WriteToken(token),
+                expiration = token.ValidTo,
+                name = user.Name,
+                email = user.Email,
+                role = user.Role
+            });
         }
 
         // POST: api/Auth/login
@@ -49,12 +63,42 @@ namespace EduSyncWebApi.Controllers
             if (user == null || user.PasswordHash != HashPassword(dto.PasswordHash))
                 return Unauthorized("Invalid credentials");
 
-            return Ok("Login successful");
+            var token = GenerateJwtToken(user);
+
+            return Ok(new
+            {
+                token = new JwtSecurityTokenHandler().WriteToken(token),
+                expiration = token.ValidTo,
+                name = user.Name,
+                email = user.Email,
+                role = user.Role
+            });
+        }
+
+        private JwtSecurityToken GenerateJwtToken(UserModel user)
+        {
+            var claims = new[]
+            {
+                new Claim(ClaimTypes.Name, user.Name),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Role, user.Role),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            };
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSettings:SecretKey"]));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            return new JwtSecurityToken(
+                issuer: _configuration["JwtSettings:Issuer"],
+                audience: _configuration["JwtSettings:Audience"],
+                claims: claims,
+                expires: DateTime.Now.AddHours(1),
+                signingCredentials: creds
+            );
         }
 
         private static string HashPassword(string password)
         {
-            // Simple SHA256 hash - use something stronger in production
             using var sha = SHA256.Create();
             var bytes = sha.ComputeHash(Encoding.UTF8.GetBytes(password));
             return Convert.ToBase64String(bytes);
