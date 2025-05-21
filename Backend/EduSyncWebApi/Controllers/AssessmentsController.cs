@@ -43,8 +43,82 @@ namespace EduSyncWebApi.Controllers
             return assessment;
         }
 
+        // GET: api/Assessments/GetCourse/{courseId}
+        [HttpGet("GetCourse/{courseId}")]
+        public async Task<ActionResult<IEnumerable<Assessment>>> GetAssessmentsByCourseId(Guid courseId)
+        {
+            var assessments = await _context.Assessments
+                .Where(a => a.CourseId == courseId)
+                .ToListAsync();
+
+            return assessments;
+        }
+
+        // POST: api/Assessments
+        [HttpPost]
+        public async Task<ActionResult<Assessment>> PostAssessment([FromBody] AssessmentDTO assessment)
+        {
+            try
+            {
+                if (assessment.AssessmentId == Guid.Empty)
+                {
+                    assessment.AssessmentId = Guid.NewGuid();
+                }
+
+                Assessment originalAssessment = new Assessment()
+                {
+                    AssessmentId = assessment.AssessmentId,
+                    CourseId = assessment.CourseId,
+                    Title = assessment.Title,
+                    Questions = assessment.Questions,
+                    MaxScore = assessment.MaxScore
+                };
+
+                _context.Assessments.Add(originalAssessment);
+                await _context.SaveChangesAsync();
+
+                return CreatedAtAction("GetAssessment", new { id = originalAssessment.AssessmentId }, originalAssessment);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        // POST: api/Assessments/ByCourse/{courseId}/create
+        [HttpPost("ByCourse/{courseId}/create")]
+        [ProducesResponseType(typeof(Assessment), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<Assessment>> PostAssessmentByCourse([FromRoute] Guid courseId, [FromBody] AssessmentDTO assessment)
+        {
+            try
+            {
+                if (assessment.AssessmentId == Guid.Empty)
+                {
+                    assessment.AssessmentId = Guid.NewGuid();
+                }
+
+                Assessment originalAssessment = new Assessment()
+                {
+                    AssessmentId = assessment.AssessmentId,
+                    CourseId = courseId,
+                    Title = assessment.Title,
+                    Questions = assessment.Questions,
+                    MaxScore = assessment.MaxScore
+                };
+
+                _context.Assessments.Add(originalAssessment);
+                await _context.SaveChangesAsync();
+
+                return CreatedAtAction("GetAssessment", new { id = originalAssessment.AssessmentId }, originalAssessment);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
         // PUT: api/Assessments/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutAssessment(Guid id, AssessmentDTO assessment)
         {
@@ -53,7 +127,7 @@ namespace EduSyncWebApi.Controllers
                 return BadRequest();
             }
 
-            Assessment orignalAssessment = new Assessment()
+            Assessment originalAssessment = new Assessment()
             {
                 AssessmentId = assessment.AssessmentId,
                 CourseId = assessment.CourseId,
@@ -62,7 +136,7 @@ namespace EduSyncWebApi.Controllers
                 MaxScore = assessment.MaxScore
             };
 
-            _context.Entry(orignalAssessment).State = EntityState.Modified;
+            _context.Entry(originalAssessment).State = EntityState.Modified;
 
             try
             {
@@ -83,41 +157,41 @@ namespace EduSyncWebApi.Controllers
             return NoContent();
         }
 
-        // POST: api/Assessments
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<Assessment>> PostAssessment(AssessmentDTO assessment)
+        // PUT: api/Assessments/{assessmentId}/Course/{courseId}
+        [HttpPut("{assessmentId}/Course/{courseId}")]
+        public async Task<IActionResult> PutAssessmentByCourse(Guid assessmentId, Guid courseId, AssessmentDTO assessment)
         {
-            //assessment.AssessmentId = Guid.NewGuid();
-            Assessment orignalAssessment = new Assessment()
-            {
-                AssessmentId = assessment.AssessmentId,
-                CourseId = assessment.CourseId,
-                Title = assessment.Title,
-                Questions = assessment.Questions,
-                MaxScore = assessment.MaxScore
-            };
+            // only assert assessmentId from URL matches the DTO
+            if (assessmentId != assessment.AssessmentId)
+                return BadRequest("assessmentId in URL must match body.");
 
-            _context.Assessments.Add(orignalAssessment);
+            // fetch *by* assessmentId alone
+            var existing = await _context.Assessments
+                .FirstOrDefaultAsync(a => a.AssessmentId == assessmentId);
+
+            if (existing == null)
+                return NotFound($"No assessment found with Id = {assessmentId}");
+
+            // now you can move it to the new course
+            existing.CourseId  = courseId;
+            existing.Title     = assessment.Title;
+            existing.Questions = assessment.Questions;
+            existing.MaxScore  = assessment.MaxScore;
 
             try
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateException)
+            catch (DbUpdateConcurrencyException)
             {
-                if (AssessmentExists(orignalAssessment.AssessmentId))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
+                // handle concurrency if needed
+                throw;
             }
 
-            return CreatedAtAction("GetAssessment", new { id = orignalAssessment .AssessmentId }, orignalAssessment);
+            return NoContent();
         }
+
+
 
         // DELETE: api/Assessments/5
         [HttpDelete("{id}")]
