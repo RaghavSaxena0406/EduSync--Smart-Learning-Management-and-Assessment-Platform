@@ -17,16 +17,10 @@ public partial class AppDbContext : DbContext
     }
 
     public virtual DbSet<Assessment> Assessments { get; set; }
-
+    public virtual DbSet<AssessmentResult> AssessmentResults { get; set; }
     public virtual DbSet<Course> Courses { get; set; }
-
     public virtual DbSet<Result> Results { get; set; }
-
     public virtual DbSet<UserModel> UserModels { get; set; }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer(" Data Source=DESKTOP-IIKHONP;Initial Catalog=EduSyncProjectDB;Integrated Security=True;Connect Timeout=30;Encrypt=True;Trust Server Certificate=True;Application Intent=ReadWrite;Multi Subnet Failover=False ");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -92,7 +86,7 @@ public partial class AppDbContext : DbContext
 
             entity.HasIndex(e => e.Email, "UQ_UserModels_Email").IsUnique();
 
-            entity.HasIndex(e => e.Email, "UQ__UserMode__A9D10534F75F0D55").IsUnique();
+            //entity.HasIndex(e => e.Email, "UQ__UserMode__A9D10534F75F0D55").IsUnique();
 
             entity.Property(e => e.UserId).HasDefaultValueSql("(newid())");
             entity.Property(e => e.Email)
@@ -107,6 +101,27 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.Role)
                 .HasMaxLength(20)
                 .IsUnicode(false);
+        });
+
+        modelBuilder.Entity<AssessmentResult>(entity =>
+        {
+            entity.HasKey(e => e.ResultId).HasName("PK_AssessmentResults");
+
+            entity.ToTable("AssessmentResult");
+
+            entity.Property(e => e.ResultId).HasDefaultValueSql("(newsequentialid())");
+            entity.Property(e => e.SubmissionDate).HasColumnType("datetime");
+            entity.Property(e => e.Answers).IsUnicode(false);
+
+            entity.HasOne(d => d.Assessment)
+                .WithMany()
+                .HasForeignKey(d => d.AssessmentId)
+                .HasConstraintName("FK_AssessmentResult_Assessment");
+
+            entity.HasOne(d => d.Student)
+                .WithMany()
+                .HasForeignKey(d => d.StudentId)
+                .HasConstraintName("FK_AssessmentResult_UserModel");
         });
 
         OnModelCreatingPartial(modelBuilder);
