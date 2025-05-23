@@ -8,6 +8,7 @@ import CourseDetail from './components/courses/CourseDetail';
 import Assessments from './components/assessments/Assessments';
 import CreateAssessment from './components/assessments/CreateAssessment';
 import EditAssessment from './components/assessments/EditAssessment';
+import QuizV2 from './components/assessments/QuizV2';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -49,6 +50,11 @@ function App() {
         <Route path="/assessments/course/:courseId/edit/:assessmentId" element={
           <ProtectedRoute>
             <EditAssessment />
+          </ProtectedRoute>
+        } />
+        <Route path="/quiz/:assessmentId" element={
+          <ProtectedRoute>
+            <QuizV2 />
           </ProtectedRoute>
         } />
         

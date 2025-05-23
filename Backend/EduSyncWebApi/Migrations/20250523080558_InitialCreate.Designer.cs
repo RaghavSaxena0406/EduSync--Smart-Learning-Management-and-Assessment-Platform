@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EduSyncWebApi.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250517084206_InitialCreate")]
+    [Migration("20250523080558_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -53,6 +53,42 @@ namespace EduSyncWebApi.Migrations
                     b.HasIndex("CourseId");
 
                     b.ToTable("Assessment", (string)null);
+                });
+
+            modelBuilder.Entity("EduSyncWebApi.Models.AssessmentResult", b =>
+                {
+                    b.Property<Guid>("ResultId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("(newsequentialid())");
+
+                    b.Property<string>("Answers")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(max)");
+
+                    b.Property<Guid>("AssessmentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("MaxScore")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Score")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("StudentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("SubmissionDate")
+                        .HasColumnType("datetime");
+
+                    b.HasKey("ResultId")
+                        .HasName("PK_AssessmentResults");
+
+                    b.HasIndex("AssessmentId");
+
+                    b.HasIndex("StudentId");
+
+                    b.ToTable("AssessmentResult", (string)null);
                 });
 
             modelBuilder.Entity("EduSyncWebApi.Models.Course", b =>
@@ -153,9 +189,6 @@ namespace EduSyncWebApi.Migrations
                     b.HasIndex(new[] { "Email" }, "UQ_UserModels_Email")
                         .IsUnique();
 
-                    b.HasIndex(new[] { "Email" }, "UQ__UserMode__A9D10534F75F0D55")
-                        .IsUnique();
-
                     b.ToTable("UserModel", (string)null);
                 });
 
@@ -167,6 +200,27 @@ namespace EduSyncWebApi.Migrations
                         .HasConstraintName("FK__Assessmen__Cours__3E52440B");
 
                     b.Navigation("Course");
+                });
+
+            modelBuilder.Entity("EduSyncWebApi.Models.AssessmentResult", b =>
+                {
+                    b.HasOne("EduSyncWebApi.Models.Assessment", "Assessment")
+                        .WithMany()
+                        .HasForeignKey("AssessmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_AssessmentResult_Assessment");
+
+                    b.HasOne("EduSyncWebApi.Models.UserModel", "Student")
+                        .WithMany()
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_AssessmentResult_UserModel");
+
+                    b.Navigation("Assessment");
+
+                    b.Navigation("Student");
                 });
 
             modelBuilder.Entity("EduSyncWebApi.Models.Course", b =>

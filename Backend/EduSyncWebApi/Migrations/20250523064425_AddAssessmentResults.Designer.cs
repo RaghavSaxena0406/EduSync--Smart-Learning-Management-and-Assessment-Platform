@@ -4,6 +4,7 @@ using EduSyncWebApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EduSyncWebApi.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250523064425_AddAssessmentResults")]
+    partial class AddAssessmentResults
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -60,6 +63,7 @@ namespace EduSyncWebApi.Migrations
                         .HasDefaultValueSql("(newsequentialid())");
 
                     b.Property<string>("Answers")
+                        .IsRequired()
                         .IsUnicode(false)
                         .HasColumnType("varchar(max)");
 
@@ -184,6 +188,9 @@ namespace EduSyncWebApi.Migrations
                         .HasName("PK__UserMode__1788CC4C26566554");
 
                     b.HasIndex(new[] { "Email" }, "UQ_UserModels_Email")
+                        .IsUnique();
+
+                    b.HasIndex(new[] { "Email" }, "UQ__UserMode__A9D10534F75F0D55")
                         .IsUnique();
 
                     b.ToTable("UserModel", (string)null);

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace EduSyncWebApi.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class AddAssessmentResults : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -67,6 +67,35 @@ namespace EduSyncWebApi.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "AssessmentResult",
+                columns: table => new
+                {
+                    ResultId = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "(newsequentialid())"),
+                    AssessmentId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    StudentId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Score = table.Column<int>(type: "int", nullable: false),
+                    MaxScore = table.Column<int>(type: "int", nullable: false),
+                    SubmissionDate = table.Column<DateTime>(type: "datetime", nullable: false),
+                    Answers = table.Column<string>(type: "varchar(max)", unicode: false, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AssessmentResults", x => x.ResultId);
+                    table.ForeignKey(
+                        name: "FK_AssessmentResult_Assessment",
+                        column: x => x.AssessmentId,
+                        principalTable: "Assessment",
+                        principalColumn: "AssessmentId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AssessmentResult_UserModel",
+                        column: x => x.StudentId,
+                        principalTable: "UserModel",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Result",
                 columns: table => new
                 {
@@ -95,6 +124,16 @@ namespace EduSyncWebApi.Migrations
                 name: "IX_Assessment_CourseId",
                 table: "Assessment",
                 column: "CourseId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AssessmentResult_AssessmentId",
+                table: "AssessmentResult",
+                column: "AssessmentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AssessmentResult_StudentId",
+                table: "AssessmentResult",
+                column: "StudentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Course_InstructorId",
@@ -127,6 +166,9 @@ namespace EduSyncWebApi.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "AssessmentResult");
+
             migrationBuilder.DropTable(
                 name: "Result");
 
