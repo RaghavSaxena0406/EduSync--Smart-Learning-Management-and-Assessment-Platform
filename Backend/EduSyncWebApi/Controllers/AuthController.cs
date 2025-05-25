@@ -73,7 +73,7 @@ namespace EduSyncWebApi.Controllers
                 name = user.Name,
                 email = user.Email,
                 role = user.Role,
-                id = user.UserId // ✅ Include user ID in the response
+                id = user.UserId 
             });
         }
 
@@ -84,11 +84,18 @@ namespace EduSyncWebApi.Controllers
                 new Claim(ClaimTypes.Name, user.Name),
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.Role, user.Role),
-                new Claim("UserId", user.UserId.ToString()), // ✅ Include UserId in the token
+                new Claim("UserId", user.UserId.ToString()), 
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSettings:SecretKey"]));
+            var secretKey = _configuration["JwtSettings:SecretKey"];
+            if (string.IsNullOrEmpty(secretKey))
+                throw new InvalidOperationException("JWT SecretKey is not configured.");
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
+
+
+            //var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSettings:SecretKey"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             return new JwtSecurityToken(
