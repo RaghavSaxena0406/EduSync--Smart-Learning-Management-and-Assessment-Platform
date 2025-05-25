@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using EduSyncWebApi.Data;
 using EduSyncWebApi.Models;
 using EduSyncWebApi.DTO;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EduSyncWebApi.Controllers
 {
@@ -46,62 +47,57 @@ namespace EduSyncWebApi.Controllers
         // PUT: api/Courses/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [Authorize(Roles = "Instructor")]
         public async Task<IActionResult> PutCourse(Guid id, CourseDTO course)
         {
-            if (id != course.CourseId)
-            {
-                return BadRequest();
-            }
+            var userIdClaim = User.FindFirst("UserId")?.Value;
+            if (!Guid.TryParse(userIdClaim, out var instructorId))
+                return Unauthorized("Missing or invalid instructor token.");
 
-            Course orignalCourse = new Course()
-            {
-                CourseId = course.CourseId,
-                Title = course.Title,
-                Description = course.Description,
-                InstructorId = course.InstructorId,
-                MediaUrl = course.MediaUrl
-            };
+            var existingCourse = await _context.Courses.FindAsync(id);
+            if (existingCourse == null)
+                return NotFound();
 
-            _context.Entry(orignalCourse).State = EntityState.Modified;
+            if (existingCourse.InstructorId != instructorId)
+                return Forbid("You can only edit your own courses.");
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!CourseExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            existingCourse.Title = course.Title;
+            existingCourse.Description = course.Description;
+            existingCourse.MediaUrl = course.MediaUrl;
+
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
+
         // POST: api/Courses
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [Authorize(Roles = "Instructor")]
         public async Task<ActionResult<Course>> PostCourse(CourseDTO course)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            //course.CourseId = Guid.NewGuid();
-            Course orignalCourse = new Course()
+            // ✅ Securely extract InstructorId from the JWT token
+            var userIdClaim = User.FindFirst("UserId")?.Value;
+            if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out Guid instructorId))
             {
-                CourseId = course.CourseId,
+                return Unauthorized("Invalid or missing user ID claim.");
+            }
+
+            // Create Course entity
+            Course newCourse = new Course()
+            {
+                CourseId = course.CourseId != Guid.Empty ? course.CourseId : Guid.NewGuid(),
                 Title = course.Title,
                 Description = course.Description,
-                InstructorId = course.InstructorId,
+                InstructorId = instructorId, // ✅ Use token-derived value
                 MediaUrl = course.MediaUrl
             };
 
-            _context.Courses.Add(orignalCourse);
+            _context.Courses.Add(newCourse);
 
             try
             {
@@ -109,9 +105,9 @@ namespace EduSyncWebApi.Controllers
             }
             catch (DbUpdateException)
             {
-                if (CourseExists(orignalCourse.CourseId))
+                if (CourseExists(newCourse.CourseId))
                 {
-                    return Conflict();
+                    return Conflict("A course with the same ID already exists.");
                 }
                 else
                 {
@@ -119,8 +115,9 @@ namespace EduSyncWebApi.Controllers
                 }
             }
 
-            return CreatedAtAction("GetCourse", new { id = orignalCourse.CourseId }, orignalCourse);
+            return CreatedAtAction("GetCourse", new { id = newCourse.CourseId }, newCourse);
         }
+
 
         // DELETE: api/Courses/5
         [HttpDelete("{id}")]

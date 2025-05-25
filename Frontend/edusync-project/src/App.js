@@ -10,6 +10,7 @@ import CreateAssessment from './components/assessments/CreateAssessment';
 import EditAssessment from './components/assessments/EditAssessment';
 import QuizV2 from './components/assessments/QuizV2';
 import Results from './components/assessments/Results';
+import Dashboard from './components/analytics/Dashboard';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -63,6 +64,11 @@ function App() {
             <Results />
           </ProtectedRoute>
         } />
+        {/* <Route path="/analytics" element={
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        } /> */}
         
         {/* Catch all route - redirect to login */}
         <Route path="*" element={<Navigate to="/login" replace />} />
