@@ -51,7 +51,8 @@ namespace EduSyncWebApi.Controllers
                 expiration = token.ValidTo,
                 name = user.Name,
                 email = user.Email,
-                role = user.Role
+                role = user.Role,
+                id = user.UserId // ✅ Include user ID in the response
             });
         }
 
@@ -71,7 +72,8 @@ namespace EduSyncWebApi.Controllers
                 expiration = token.ValidTo,
                 name = user.Name,
                 email = user.Email,
-                role = user.Role
+                role = user.Role,
+                id = user.UserId // ✅ Include user ID in the response
             });
         }
 
@@ -82,6 +84,7 @@ namespace EduSyncWebApi.Controllers
                 new Claim(ClaimTypes.Name, user.Name),
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.Role, user.Role),
+                new Claim("UserId", user.UserId.ToString()), // ✅ Include UserId in the token
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 

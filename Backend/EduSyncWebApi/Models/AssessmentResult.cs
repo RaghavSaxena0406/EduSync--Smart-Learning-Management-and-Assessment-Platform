@@ -33,4 +33,4 @@ namespace EduSyncWebApi.Models
         [ForeignKey("StudentId")]
         public virtual UserModel? Student { get; set; }
     }
-} 
+}

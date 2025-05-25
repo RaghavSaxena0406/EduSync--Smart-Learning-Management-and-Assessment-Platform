@@ -56,24 +56,23 @@ function CreateAssessment() {
       return;
     }
 
+    const newQuestion = JSON.parse(JSON.stringify(currentQuestion)); // 🔑 Deep clone
+
     if (editingIndex >= 0) {
-      // Update existing question
       const updatedQuestions = [...assessment.questions];
-      updatedQuestions[editingIndex] = currentQuestion;
+      updatedQuestions[editingIndex] = newQuestion;
       setAssessment(prev => ({
         ...prev,
         questions: updatedQuestions
       }));
       setEditingIndex(-1);
     } else {
-      // Add new question
       setAssessment(prev => ({
         ...prev,
-        questions: [...prev.questions, currentQuestion]
+        questions: [...prev.questions, newQuestion]
       }));
     }
 
-    // Reset current question
     setCurrentQuestion({
       text: '',
       options: ['', '', '', ''],
@@ -99,7 +98,7 @@ function CreateAssessment() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (isSubmitting) return;
-    
+
     if (assessment.questions.length === 0) {
       setError('Please add at least one question');
       return;
@@ -110,7 +109,6 @@ function CreateAssessment() {
       return;
     }
 
-    // Calculate total score from all questions
     const totalQuestionScore = assessment.questions.reduce((sum, q) => sum + q.score, 0);
     if (totalQuestionScore !== assessment.maxScore) {
       setError(`Total question scores (${totalQuestionScore}) must equal the maximum score (${assessment.maxScore})`);
@@ -129,8 +127,7 @@ function CreateAssessment() {
       console.log('Sending assessment data:', assessmentData);
       const response = await axios.post(`/Assessments/ByCourse/${courseId}/create`, assessmentData);
       console.log('Assessment created:', response.data);
-      
-      // Use setTimeout to ensure state updates are complete before navigation
+
       setTimeout(() => {
         navigate(`/assessments/course/${courseId}`, { replace: true });
       }, 100);

@@ -8,6 +8,7 @@ using EduSyncWebApi.Data;
 using EduSyncWebApi.Models;
 using EduSyncWebApi.DTOs;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace EduSyncWebApi.Controllers
 {
@@ -27,23 +28,76 @@ namespace EduSyncWebApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<AssessmentResultDTO>>> GetAssessmentResults()
         {
-            return await _context.AssessmentResults
+            var userIdClaim = User.FindFirst("UserId")?.Value;
+            var roleClaim = User.FindFirst(ClaimTypes.Role)?.Value;
+
+            if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
+                return Unauthorized("Invalid or missing UserId claim.");
+
+            if (string.IsNullOrEmpty(roleClaim))
+                return Unauthorized("Missing role claim.");
+
+            IQueryable<AssessmentResult> query;
+
+            if (roleClaim.Equals("Student", StringComparison.OrdinalIgnoreCase))
+            {
+                // Students only see their own results
+                query = _context.AssessmentResults
+                    .Where(r => r.StudentId == userId);
+            }
+            else if (roleClaim.Equals("Instructor", StringComparison.OrdinalIgnoreCase))
+            {
+                // Instructors see results for assessments from their courses
+                query = _context.AssessmentResults
+                    .Include(r => r.Assessment)
+                    .ThenInclude(a => a.Course)
+                    .Where(r => r.Assessment.Course.InstructorId == userId);
+            }
+            else
+            {
+                return Forbid("Only students or instructors are allowed to view results.");
+            }
+
+            var results = await query
                 .Select(result => new AssessmentResultDTO(result))
                 .ToListAsync();
+
+            return Ok(results);
         }
+
+
 
         // GET: api/AssessmentResults/5
         [HttpGet("{id}")]
         public async Task<ActionResult<AssessmentResultDTO>> GetAssessmentResult(Guid id)
         {
-            var result = await _context.AssessmentResults.FindAsync(id);
+            var userIdClaim = User.FindFirst("UserId")?.Value;
+            var roleClaim = User.FindFirst(ClaimTypes.Role)?.Value;
+
+            if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
+                return Unauthorized("Invalid or missing UserId claim.");
+
+            if (string.IsNullOrEmpty(roleClaim))
+                return Unauthorized("Missing role claim.");
+
+            var result = await _context.AssessmentResults
+                .Include(r => r.Assessment)
+                .ThenInclude(a => a.Course)
+                .FirstOrDefaultAsync(r => r.ResultId == id);
+
             if (result == null)
-            {
                 return NotFound();
-            }
+
+            if (roleClaim.Equals("Student", StringComparison.OrdinalIgnoreCase) && result.StudentId != userId)
+                return Forbid("Students can only access their own results.");
+
+            if (roleClaim.Equals("Instructor", StringComparison.OrdinalIgnoreCase) &&
+                result.Assessment?.Course?.InstructorId != userId)
+                return Forbid("Instructors can only access results from their own courses.");
 
             return new AssessmentResultDTO(result);
         }
+
 
         // GET: api/AssessmentResults/student/{studentId}
         [HttpGet("student/{studentId}")]
@@ -72,6 +126,13 @@ namespace EduSyncWebApi.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
+           
+            var userExists = await _context.UserModels.AnyAsync(u => u.UserId == dto.StudentId);
+            if (!userExists)
+            {
+                return BadRequest($"Student with ID {dto.StudentId} does not exist.");
+            }
+
             var result = new AssessmentResult
             {
                 ResultId = Guid.NewGuid(),
@@ -88,6 +149,7 @@ namespace EduSyncWebApi.Controllers
 
             return CreatedAtAction(nameof(GetAssessmentResult), new { id = result.ResultId }, new AssessmentResultDTO(result));
         }
+
 
         // PUT: api/AssessmentResults/5
         [HttpPut("{id}")]

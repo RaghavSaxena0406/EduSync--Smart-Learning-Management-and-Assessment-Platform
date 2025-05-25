@@ -18,21 +18,23 @@ function QuizV2() {
   useEffect(() => {
     const fetchAssessment = async () => {
       try {
-        setLoading(true);
         const response = await axios.get(`/Assessments/${assessmentId}`);
         const assessmentData = response.data;
-        
-        // Parse questions if they are stored as a JSON string
-        const parsedQuestions = typeof assessmentData.questions === 'string' 
-          ? JSON.parse(assessmentData.questions) 
+
+        let parsedQuestions = typeof assessmentData.questions === 'string'
+          ? JSON.parse(assessmentData.questions)
           : assessmentData.questions;
 
+        parsedQuestions = parsedQuestions.map((q, idx) => ({
+          ...q,
+          questionId: q.questionId || `q${idx}`
+        }));
+
         setAssessment(assessmentData);
-        setQuestions(parsedQuestions || []);
-        
-        // Initialize selectedAnswers with empty values
+        setQuestions(parsedQuestions);
+
         const initialAnswers = {};
-        parsedQuestions?.forEach(q => {
+        parsedQuestions.forEach(q => {
           initialAnswers[q.questionId] = null;
         });
         setSelectedAnswers(initialAnswers);
@@ -53,39 +55,48 @@ function QuizV2() {
       [questionId]: option
     }));
   };
-
   const calculateScore = () => {
     let totalScore = 0;
     questions.forEach(question => {
-      if (selectedAnswers[question.questionId] === question.correctAnswer) {
-        totalScore += question.points || 1;
+      const selectedValue = selectedAnswers[question.questionId];
+      const correctIndex = question.correctAnswer;
+  
+      const selectedIndex = question.options.findIndex(opt => opt === selectedValue);
+  
+      if (selectedIndex === correctIndex) {
+        totalScore += question.points || question.score || 1; // fallback to `score` if `points` is undefined
       }
     });
     return totalScore;
   };
-
+  
+  
   const handleSubmit = async () => {
-    if (!window.confirm('Are you sure you want to submit your answers?')) {
+    console.log("Submitting assessment with StudentId:", user?.id);
+    if (!user?.id) {
+      setError("User ID is missing. Please re-login.");
       return;
     }
-
+  
+    if (!window.confirm('Are you sure you want to submit your answers?')) return;
+  
     try {
       const finalScore = calculateScore();
       setScore(finalScore);
       setSubmitted(true);
-
-      // Submit the assessment result to the backend
+  
       await axios.post('/AssessmentResults', {
-        assessmentId: assessmentId,
-        studentId: user.id,
+        assessmentId,
+        studentId: user.id, // ✅ Now correctly set
         score: finalScore,
         maxScore: assessment.maxScore,
-        answers: JSON.stringify(Object.entries(selectedAnswers).map(([questionId, answer]) => ({
-          questionId,
-          answer
-        })))
+        answers: JSON.stringify(
+          Object.entries(selectedAnswers).map(([questionId, answer]) => ({
+            questionId,
+            answer
+          }))
+        )
       });
-
     } catch (err) {
       console.error('Error submitting assessment:', err);
       setError('Failed to submit assessment. Please try again later.');
@@ -162,4 +173,4 @@ function QuizV2() {
   );
 }
 
-export default QuizV2; 
+export default QuizV2;
