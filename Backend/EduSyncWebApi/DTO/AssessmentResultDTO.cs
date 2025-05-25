@@ -13,6 +13,8 @@ namespace EduSyncWebApi.DTOs
         public DateTime SubmissionDate { get; set; }
         public string? Answers { get; set; }
 
+        public string? AssessmentTitle { get; set; } // ✅ Added
+
         public AssessmentResultDTO(AssessmentResult result)
         {
             ResultId = result.ResultId;
@@ -22,6 +24,8 @@ namespace EduSyncWebApi.DTOs
             MaxScore = result.MaxScore;
             SubmissionDate = result.SubmissionDate;
             Answers = result.Answers;
+
+            AssessmentTitle = result.Assessment?.Title; // ✅ Pull title if available
         }
     }
 
