@@ -28,7 +28,10 @@ function EditAssessment() {
         const assessmentData = response.data;
         setAssessment({
           title: assessmentData.title,
-          questions: JSON.parse(assessmentData.questions),
+          questions: JSON.parse(assessmentData.questions).map((q, idx) => ({
+            ...q,
+            questionId: q.questionId || `q${idx}`
+          })),
           maxScore: assessmentData.maxScore
         });
         setError(null);
@@ -80,7 +83,6 @@ function EditAssessment() {
     }
 
     if (editingIndex >= 0) {
-      // Update existing question
       const updatedQuestions = [...assessment.questions];
       updatedQuestions[editingIndex] = currentQuestion;
       setAssessment(prev => ({
@@ -89,14 +91,12 @@ function EditAssessment() {
       }));
       setEditingIndex(-1);
     } else {
-      // Add new question
       setAssessment(prev => ({
         ...prev,
-        questions: [...prev.questions, currentQuestion]
+        questions: [...prev.questions, { ...currentQuestion, questionId: `q${prev.questions.length}` }]
       }));
     }
 
-    // Reset current question
     setCurrentQuestion({
       text: '',
       options: ['', '', '', ''],
@@ -122,7 +122,7 @@ function EditAssessment() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (isSubmitting) return;
-    
+
     if (assessment.questions.length === 0) {
       setError('Please add at least one question');
       return;
@@ -133,7 +133,6 @@ function EditAssessment() {
       return;
     }
 
-    // Calculate total score from all questions
     const totalQuestionScore = assessment.questions.reduce((sum, q) => sum + q.score, 0);
     if (totalQuestionScore !== assessment.maxScore) {
       setError(`Total question scores (${totalQuestionScore}) must equal the maximum score (${assessment.maxScore})`);
@@ -143,18 +142,23 @@ function EditAssessment() {
     try {
       setIsSubmitting(true);
       const assessmentData = {
-        assessmentId: assessmentId,
-        courseId: courseId,
+        assessmentId,
+        courseId,
         title: assessment.title,
-        questions: JSON.stringify(assessment.questions),
+        questions: JSON.stringify(
+          assessment.questions.map((q, idx) => ({
+            questionId: q.questionId || `q${idx}`,
+            text: q.text,
+            options: q.options,
+            correctAnswer: q.correctAnswer,
+            score: q.score
+          }))
+        ),
         maxScore: assessment.maxScore
       };
 
-      console.log('Sending assessment data:', assessmentData);
-      const response = await axios.put(`/Assessments/${assessmentId}/Course/${courseId}`, assessmentData);
-      console.log('Assessment updated:', response.data);
-      
-      // Use setTimeout to ensure state updates are complete before navigation
+      await axios.put(`/Assessments/${assessmentId}/Course/${courseId}`, assessmentData);
+
       setTimeout(() => {
         navigate(`/assessments/course/${courseId}`, { replace: true });
       }, 100);
@@ -170,9 +174,7 @@ function EditAssessment() {
     }
   };
 
-  if (isLoading) {
-    return <div className="container mt-4">Loading assessment...</div>;
-  }
+  if (isLoading) return <div className="container mt-4">Loading assessment...</div>;
 
   if (error) {
     return (

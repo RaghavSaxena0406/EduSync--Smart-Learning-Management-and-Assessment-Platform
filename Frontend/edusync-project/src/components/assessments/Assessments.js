@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import axios from '../../utils/axiosConfig';
 import { useAuth } from '../../context/AuthContext';
@@ -11,7 +11,7 @@ function Assessments() {
   const [error, setError] = useState(null);
   const { user } = useAuth();
 
-  const fetchAssessments = async () => {
+  const fetchAssessments = useCallback(async () => {
     try {
       setLoading(true);
       const response = await axios.get(`/Assessments/GetCourse/${courseId}`);
@@ -28,7 +28,7 @@ function Assessments() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [courseId]);
 
   const handleDelete = async (assessmentId) => {
     if (!window.confirm('Are you sure you want to delete this assessment?')) {
@@ -50,7 +50,7 @@ function Assessments() {
 
   useEffect(() => {
     fetchAssessments();
-  }, [courseId]);
+  }, [fetchAssessments]);
 
   if (loading) {
     return <div className="container mt-4">Loading assessments...</div>;
