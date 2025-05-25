@@ -24,12 +24,12 @@ namespace EduSyncWebApi.Controllers
             _context = context;
         }
 
-        // GET: api/AssessmentResults
+       // GET: api/AssessmentResults
         [HttpGet]
         public async Task<ActionResult<IEnumerable<AssessmentResultDTO>>> GetAssessmentResults()
         {
             var userIdClaim = User.FindFirst("UserId")?.Value;
-            var roleClaim = User.FindFirst(ClaimTypes.Role)?.Value;
+            var roleClaim = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value;
 
             if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
                 return Unauthorized("Invalid or missing UserId claim.");
@@ -41,13 +41,12 @@ namespace EduSyncWebApi.Controllers
 
             if (roleClaim.Equals("Student", StringComparison.OrdinalIgnoreCase))
             {
-                // Students only see their own results
                 query = _context.AssessmentResults
+                    .Include(r => r.Assessment)
                     .Where(r => r.StudentId == userId);
             }
             else if (roleClaim.Equals("Instructor", StringComparison.OrdinalIgnoreCase))
             {
-                // Instructors see results for assessments from their courses
                 query = _context.AssessmentResults
                     .Include(r => r.Assessment)
                     .ThenInclude(a => a.Course)
@@ -55,7 +54,7 @@ namespace EduSyncWebApi.Controllers
             }
             else
             {
-                return Forbid("Only students or instructors are allowed to view results.");
+                return Forbid("Only students or instructors can access results.");
             }
 
             var results = await query
@@ -65,14 +64,12 @@ namespace EduSyncWebApi.Controllers
             return Ok(results);
         }
 
-
-
-        // GET: api/AssessmentResults/5
+        // GET: api/AssessmentResults/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<AssessmentResultDTO>> GetAssessmentResult(Guid id)
         {
             var userIdClaim = User.FindFirst("UserId")?.Value;
-            var roleClaim = User.FindFirst(ClaimTypes.Role)?.Value;
+            var roleClaim = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value;
 
             if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
                 return Unauthorized("Invalid or missing UserId claim.");
@@ -104,6 +101,7 @@ namespace EduSyncWebApi.Controllers
         public async Task<ActionResult<IEnumerable<AssessmentResultDTO>>> GetResultsByStudentId(Guid studentId)
         {
             return await _context.AssessmentResults
+                .Include(r => r.Assessment)
                 .Where(r => r.StudentId == studentId)
                 .Select(result => new AssessmentResultDTO(result))
                 .ToListAsync();
