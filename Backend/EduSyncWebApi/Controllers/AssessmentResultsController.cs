@@ -107,6 +107,65 @@ namespace EduSyncWebApi.Controllers
                 .ToListAsync();
         }
 
+        // GET: api/AssessmentResults/instructor
+        //[HttpGet("instructor")]
+        //[Authorize(Roles = "Instructor")]
+        //public async Task<ActionResult<IEnumerable<object>>> GetResultsForInstructor()
+        //{
+        //    var userIdClaim = User.FindFirst("UserId")?.Value;
+
+        //    if (!Guid.TryParse(userIdClaim, out var instructorId))
+        //        return Unauthorized("Invalid instructor token.");
+
+        //    var results = await _context.AssessmentResults
+        //        .Include(r => r.Assessment)
+        //            .ThenInclude(a => a.Course)
+        //        .Include(r => r.Student)
+        //        .Where(r => r.Assessment.Course.InstructorId == instructorId)
+        //        .Select(r => new
+        //        {
+        //            StudentName = r.Student.Name,
+        //            CourseName = r.Assessment.Course.Title,
+        //            AssessmentTitle = r.Assessment.Title,
+        //            MarksObtained = r.Score,
+        //            MaxScore = r.Assessment.MaxScore,
+        //            Percentage = Math.Round((double)r.Score / r.Assessment.MaxScore * 100, 2)
+        //        })
+        //        .ToListAsync();
+
+        //    return Ok(results);
+        //}
+
+        [HttpGet("instructor")]
+        [Authorize(Roles = "Instructor")]
+        public async Task<ActionResult<IEnumerable<object>>> GetResultsForInstructor()
+        {
+            var userIdClaim = User.FindFirst("UserId")?.Value;
+
+            if (!Guid.TryParse(userIdClaim, out var instructorId))
+                return Unauthorized("Invalid instructor token.");
+
+            var results = await _context.AssessmentResults
+                .Include(r => r.Assessment)
+                    .ThenInclude(a => a.Course)
+                .Include(r => r.Student)
+                .Where(r => r.Assessment.Course.InstructorId == instructorId)
+                .Select(r => new
+                {
+                    StudentName = r.Student.Name,
+                    CourseName = r.Assessment.Course.Title,
+                    AssessmentTitle = r.Assessment.Title,
+                    MarksObtained = r.Score,
+                    MaxScore = r.Assessment.MaxScore,
+                    Percentage = r.Assessment.MaxScore > 0
+                        ? Math.Round((r.Score / (double)r.Assessment.MaxScore) * 100, 2)
+                        : 0
+                })
+                .ToListAsync();
+
+            return Ok(results);
+        }
+
         // GET: api/AssessmentResults/assessment/{assessmentId}
         [HttpGet("assessment/{assessmentId}")]
         public async Task<ActionResult<IEnumerable<AssessmentResultDTO>>> GetResultsByAssessmentId(Guid assessmentId)

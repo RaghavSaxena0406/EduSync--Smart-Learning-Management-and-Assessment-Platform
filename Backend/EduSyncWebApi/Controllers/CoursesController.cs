@@ -46,6 +46,30 @@ namespace EduSyncWebApi.Controllers
 
         // PUT: api/Courses/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        //[HttpPut("{id}")]
+        //[Authorize(Roles = "Instructor")]
+        //public async Task<IActionResult> PutCourse(Guid id, CourseDTO course)
+        //{
+        //    var userIdClaim = User.FindFirst("UserId")?.Value;
+        //    if (!Guid.TryParse(userIdClaim, out var instructorId))
+        //        return Unauthorized("Missing or invalid instructor token.");
+
+        //    var existingCourse = await _context.Courses.FindAsync(id);
+        //    if (existingCourse == null)
+        //        return NotFound();
+
+        //    if (existingCourse.InstructorId != instructorId)
+        //        return Forbid("You can only edit your own courses.");
+
+        //    existingCourse.Title = course.Title;
+        //    existingCourse.Description = course.Description;
+        //    existingCourse.MediaUrl = course.MediaUrl;
+
+        //    await _context.SaveChangesAsync();
+
+        //    return NoContent();
+        //}
+        // PUT: api/Courses/5
         [HttpPut("{id}")]
         [Authorize(Roles = "Instructor")]
         public async Task<IActionResult> PutCourse(Guid id, CourseDTO course)
@@ -120,7 +144,24 @@ namespace EduSyncWebApi.Controllers
 
 
         // DELETE: api/Courses/5
+        //[HttpDelete("{id}")]
+        //public async Task<IActionResult> DeleteCourse(Guid id)
+        //{
+        //    var course = await _context.Courses.FindAsync(id);
+        //    if (course == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    _context.Courses.Remove(course);
+        //    await _context.SaveChangesAsync();
+
+        //    return NoContent();
+        //}
+
+        // DELETE: api/Courses/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Instructor")]
         public async Task<IActionResult> DeleteCourse(Guid id)
         {
             var course = await _context.Courses.FindAsync(id);
@@ -128,6 +169,13 @@ namespace EduSyncWebApi.Controllers
             {
                 return NotFound();
             }
+
+            var userIdClaim = User.FindFirst("UserId")?.Value;
+            if (!Guid.TryParse(userIdClaim, out var instructorId))
+                return Unauthorized("Missing or invalid instructor token.");
+
+            if (course.InstructorId != instructorId)
+                return Forbid("You can only delete your own courses.");
 
             _context.Courses.Remove(course);
             await _context.SaveChangesAsync();
