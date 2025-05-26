@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using EduSyncWebApi.Data;
 using EduSyncWebApi.Models;
 using EduSyncWebApi.DTO;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EduSyncWebApi.Controllers
 {
@@ -16,6 +17,7 @@ namespace EduSyncWebApi.Controllers
     public class AssessmentsController : ControllerBase
     {
         private readonly AppDbContext _context;
+
 
         public AssessmentsController(AppDbContext context)
         {
@@ -158,25 +160,64 @@ namespace EduSyncWebApi.Controllers
         }
 
         // PUT: api/Assessments/{assessmentId}/Course/{courseId}
+        //[HttpPut("{assessmentId}/Course/{courseId}")]
+        //public async Task<IActionResult> PutAssessmentByCourse(Guid assessmentId, Guid courseId, AssessmentDTO assessment)
+        //{
+        //    // only assert assessmentId from URL matches the DTO
+        //    if (assessmentId != assessment.AssessmentId)
+        //        return BadRequest("assessmentId in URL must match body.");
+
+        //    // fetch *by* assessmentId alone
+        //    var existing = await _context.Assessments
+        //        .FirstOrDefaultAsync(a => a.AssessmentId == assessmentId);
+
+        //    if (existing == null)
+        //        return NotFound($"No assessment found with Id = {assessmentId}");
+
+        //    // now you can move it to the new course
+        //    existing.CourseId = courseId;
+        //    existing.Title = assessment.Title;
+        //    existing.Questions = assessment.Questions;
+        //    existing.MaxScore = assessment.MaxScore;
+
+        //    try
+        //    {
+        //        await _context.SaveChangesAsync();
+        //    }
+        //    catch (DbUpdateConcurrencyException)
+        //    {
+        //        // handle concurrency if needed
+        //        throw;
+        //    }
+
+        //    return NoContent();
+        //}
         [HttpPut("{assessmentId}/Course/{courseId}")]
+        [Authorize(Roles = "Instructor")]
         public async Task<IActionResult> PutAssessmentByCourse(Guid assessmentId, Guid courseId, AssessmentDTO assessment)
         {
-            // only assert assessmentId from URL matches the DTO
             if (assessmentId != assessment.AssessmentId)
-                return BadRequest("assessmentId in URL must match body.");
+                return BadRequest("Assessment ID in URL must match body.");
 
-            // fetch *by* assessmentId alone
             var existing = await _context.Assessments
+                .Include(a => a.Course)
                 .FirstOrDefaultAsync(a => a.AssessmentId == assessmentId);
 
             if (existing == null)
                 return NotFound($"No assessment found with Id = {assessmentId}");
 
-            // now you can move it to the new course
-            existing.CourseId  = courseId;
-            existing.Title     = assessment.Title;
+            // Check if the instructor owns the course
+            var userId = User.FindFirst("UserId")?.Value;
+            if (!Guid.TryParse(userId, out var instructorId) || existing.Course?.InstructorId != instructorId)
+            {
+                return Forbid();
+            }
+
+            // Update the assessment
+            existing.CourseId = courseId;
+            existing.Title = assessment.Title;
             existing.Questions = assessment.Questions;
-            existing.MaxScore  = assessment.MaxScore;
+            existing.MaxScore = assessment.MaxScore;
 
             try
             {
@@ -184,7 +225,9 @@ namespace EduSyncWebApi.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                // handle concurrency if needed
+                if (!AssessmentExists(assessmentId))
+                    return NotFound();
+
                 throw;
             }
 
@@ -192,15 +235,42 @@ namespace EduSyncWebApi.Controllers
         }
 
 
-
         // DELETE: api/Assessments/5
+        //[HttpDelete("{id}")]
+        //public async Task<IActionResult> DeleteAssessment(Guid id)
+        //{
+        //    var assessment = await _context.Assessments.FindAsync(id);
+        //    if (assessment == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    _context.Assessments.Remove(assessment);
+        //    await _context.SaveChangesAsync();
+
+        //    return NoContent();
+        //}
+
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Instructor")]
         public async Task<IActionResult> DeleteAssessment(Guid id)
         {
-            var assessment = await _context.Assessments.FindAsync(id);
+            var assessment = await _context.Assessments
+                .Include(a => a.Course)
+                .FirstOrDefaultAsync(a => a.AssessmentId == id);
+
             if (assessment == null)
             {
                 return NotFound();
+            }
+
+            // Get the instructor's ID from the JWT
+            var userId = User.FindFirst("UserId")?.Value;
+
+            // Validate userId and check ownership
+            if (!Guid.TryParse(userId, out var instructorId) || assessment.Course?.InstructorId != instructorId)
+            {
+                return Forbid();
             }
 
             _context.Assessments.Remove(assessment);
@@ -208,6 +278,7 @@ namespace EduSyncWebApi.Controllers
 
             return NoContent();
         }
+
 
         private bool AssessmentExists(Guid id)
         {
