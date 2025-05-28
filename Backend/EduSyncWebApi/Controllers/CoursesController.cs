@@ -9,6 +9,7 @@ using EduSyncWebApi.Data;
 using EduSyncWebApi.Models;
 using EduSyncWebApi.DTO;
 using Microsoft.AspNetCore.Authorization;
+using EduSyncWebApi.Services;
 
 namespace EduSyncWebApi.Controllers
 {
@@ -141,6 +142,32 @@ namespace EduSyncWebApi.Controllers
 
             return CreatedAtAction("GetCourse", new { id = newCourse.CourseId }, newCourse);
         }
+
+        [HttpPost("{id}/upload")]
+        [Authorize(Roles = "Instructor")]
+        public async Task<IActionResult> UploadCourseMaterial(Guid id, IFormFile file, [FromServices] BlobStorageService blobService)
+        {
+            if (file == null || file.Length == 0)
+                return BadRequest("No file uploaded.");
+
+            var userIdClaim = User.FindFirst("UserId")?.Value;
+            if (!Guid.TryParse(userIdClaim, out var instructorId))
+                return Unauthorized("Missing or invalid instructor token.");
+
+            var course = await _context.Courses.FindAsync(id);
+            if (course == null)
+                return NotFound("Course not found.");
+
+            if (course.InstructorId != instructorId)
+                return Forbid("You can only update your own courses.");
+
+            var blobUrl = await blobService.UploadFileAsync(file);
+            course.MediaUrl = blobUrl;
+
+            await _context.SaveChangesAsync();
+            return Ok(new { mediaUrl = blobUrl });
+        }
+
 
 
         // DELETE: api/Courses/5
